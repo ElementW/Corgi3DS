@@ -545,9 +545,19 @@ void Emulator::arm9_write8(uint32_t addr, uint8_t value)
         i2c.write8(addr, value);
         return;
     }
+    if (addr >= 0x10148000 && addr < 0x10149000)
+    {
+        i2c.write8(addr, value);
+        return;
+    }
     if (addr >= 0x10160000 && addr < 0x10161000)
     {
         printf("[SPI2] Unrecognized write8 $%08X: $%02X\n", addr, value);
+        return;
+    }
+    if (addr >= 0x10161000 && addr < 0x10162000)
+    {
+        i2c.write8(addr, value);
         return;
     }
     if (addr >= 0x10164000 && addr < 0x10165000)
@@ -694,6 +704,18 @@ void Emulator::arm9_write16(uint32_t addr, uint16_t value)
             return;
         case 0x10009006:
             aes.write_block_count(value);
+            return;
+        case 0x10144002:
+            return;
+        case 0x10144004:
+            return;
+        case 0x10148002:
+            return;
+        case 0x10148004:
+            return;
+        case 0x10161002:
+            return;
+        case 0x10161004:
             return;
     }
     EmuException::die("[ARM9] Invalid write16 $%08X: $%04X\n", addr, value);
@@ -1145,9 +1167,17 @@ void Emulator::arm11_write16(int core, uint32_t addr, uint16_t value)
     {
         case 0x101401C0:
             return;
+        case 0x10144002:
+            return;
+        case 0x10144004:
+            return;
         case 0x10148002:
             return;
         case 0x10148004:
+            return;
+        case 0x10161002:
+            return;
+        case 0x10161004:
             return;
         case 0x10163004:
             pxi.write_cnt11(value);
