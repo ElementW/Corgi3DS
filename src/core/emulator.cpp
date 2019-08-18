@@ -525,6 +525,8 @@ uint32_t Emulator::arm9_read32(uint32_t addr)
             return 0; //SPI control
         case 0x10140FFC:
             return 0x1; //bit 1 = New3DS (we're only emulating Old3DS for now)
+        case 0x10141200:
+            return 0; //GPU power config
         case 0x10146000:
             return HID_PAD;
     }
