@@ -1,6 +1,7 @@
 #ifndef EMULATOR_HPP
 #define EMULATOR_HPP
 #include <cstdint>
+#include <random>
 #include "arm9/aes.hpp"
 #include "arm9/cartridge.hpp"
 #include "arm9/dma9.hpp"
@@ -29,6 +30,8 @@
 class Emulator
 {
     private:
+        using PRNG = std::mt19937;
+
         //ROMs
         uint8_t* otp;
         uint8_t otp_free[256], otp_locked[256];
@@ -59,6 +62,7 @@ class Emulator
         I2C i2c;
         Interrupt9 int9;
         MPCore_PMR mpcore_pmr;
+        PRNG prng;
         PXI pxi;
         RSA rsa;
         Scheduler scheduler;

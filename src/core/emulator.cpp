@@ -19,6 +19,7 @@ Emulator::Emulator() :
     i2c(&mpcore_pmr, &scheduler),
     int9(&arm9),
     mpcore_pmr(&appcore, &syscore, &timers),
+    prng(std::random_device()()),
     pxi(&mpcore_pmr, &int9),
     rsa(&int9),
     sha(&dma9),
@@ -407,11 +408,10 @@ uint16_t Emulator::arm9_read16(uint32_t addr)
     if (addr >= 0x10006000 && addr < 0x10007000)
         return emmc.read16(addr);
 
-    //PRNG - TODO
     if (addr >= 0x10011000 && addr < 0x10012000)
     {
         printf("[ARM9] Read16 PRNG\n");
-        return addr & 0xFFFF;
+        return prng() & 0xFFFF;
     }
 
     if (addr >= 0x10122000 && addr < 0x10123000)
@@ -483,10 +483,8 @@ uint32_t Emulator::arm9_read32(uint32_t addr)
 
     if (addr >= 0x10011000 && addr < 0x10012000)
     {
-        if (addr == 0x10011000)
-            return rand(); //TODO: Make a proper RNG out of this
-        printf("[ARM9] Unrecognized read32 from PRNG $%08X\n", addr);
-        return 0;
+        printf("[ARM9] Read32 PRNG\n");
+        return prng() & 0xFFFFFFFF;
     }
 
     if (addr >= 0x10012000 && addr < 0x10012100)
